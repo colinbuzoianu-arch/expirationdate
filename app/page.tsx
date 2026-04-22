@@ -756,32 +756,77 @@ function ResultScreen({ result, isPaid, onUnlock, onRestart }: {
           <p style={{ fontSize: 11, fontWeight: 600, color: rc.color, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 8, opacity: 0.8 }}>
             {isGood ? "Status" : "Predicted End Date"}
           </p>
-          <p style={{
-            fontFamily: "'Bebas Neue', sans-serif",
-            fontSize: isGood ? 36 : "clamp(36px, 8vw, 56px)",
-            color: rc.color, letterSpacing: "0.04em", lineHeight: 1,
-            marginBottom: 16,
-          }}>
-            {result.expirationLabel}
-          </p>
+          {/* DATE — locked behind paywall unless Strong (always shown) or paid */}
+          {isPaid || isGood ? (
+            <p style={{
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: isGood ? 36 : "clamp(36px, 8vw, 56px)",
+              color: rc.color, letterSpacing: "0.04em", lineHeight: 1,
+              marginBottom: 16,
+            }}>
+              {result.expirationLabel}
+            </p>
+          ) : (
+            <div style={{ position: "relative", marginBottom: 16, display: "inline-block" }}>
+              {/* Blurred ghost of the date behind */}
+              <p style={{
+                fontFamily: "'Bebas Neue', sans-serif",
+                fontSize: "clamp(36px, 8vw, 56px)",
+                color: rc.color, letterSpacing: "0.04em", lineHeight: 1,
+                filter: "blur(10px)", userSelect: "none", pointerEvents: "none",
+                opacity: 0.7,
+              }}>
+                {result.expirationLabel}
+              </p>
+              {/* Lock overlay */}
+              <div style={{
+                position: "absolute", inset: 0,
+                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                gap: 4,
+              }}>
+                <span style={{ fontSize: 20 }}>🔒</span>
+                <span style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 11, fontWeight: 700, color: rc.color,
+                  textTransform: "uppercase", letterSpacing: "0.1em",
+                  background: "rgba(250,247,242,0.85)", padding: "2px 10px", borderRadius: 20,
+                }}>Unlock to reveal</span>
+              </div>
+            </div>
+          )}
           <div style={{ height: 1, background: `${rc.color}25`, margin: "0 0 16px" }} />
           <p style={{ fontFamily: "'DM Serif Display', serif", fontStyle: "italic", fontSize: 17, color: "#1A1510", lineHeight: 1.55, marginBottom: 8 }}>
             {result.headline}
           </p>
           <p style={{ fontSize: 13, color: "#5C544A", lineHeight: 1.75 }}>{result.summary}</p>
         </div>
-        {/* Survival odds bar */}
+        {/* Survival odds bar — percentage hidden until paid */}
         <div style={{ padding: "0 1.5rem 1.5rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
             <span style={{ fontSize: 11, color: rc.color, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>Survival odds</span>
-            <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color: rc.color }}>{result.survivalOdds}%</span>
+            {isPaid || isGood ? (
+              <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color: rc.color }}>{result.survivalOdds}%</span>
+            ) : (
+              <span style={{
+                fontFamily: "'Bebas Neue', sans-serif", fontSize: 20,
+                color: rc.color, filter: "blur(5px)", userSelect: "none",
+              }}>{result.survivalOdds}%</span>
+            )}
           </div>
           <div style={{ height: 6, background: "rgba(0,0,0,0.08)", borderRadius: 3, overflow: "hidden" }}>
+            {/* Bar always shows direction but exact fill blurred if not paid */}
             <div style={{
               height: "100%", background: rc.color, borderRadius: 3,
-              width: `${result.survivalOdds}%`, transition: "width 1.2s ease",
+              width: isPaid || isGood ? `${result.survivalOdds}%` : "50%",
+              filter: isPaid || isGood ? "none" : "blur(3px)",
+              transition: "width 1.2s ease",
             }} />
           </div>
+          {!isPaid && !isGood && (
+            <p style={{ fontSize: 11, color: "var(--muted)", textAlign: "center", marginTop: 6, fontStyle: "italic" }}>
+              Exact odds revealed in full report
+            </p>
+          )}
         </div>
       </div>
 
@@ -944,7 +989,7 @@ function FactorRow({ factor }: { factor: ExpirationResult["factors"][0] }) {
 
 function PaywallGate({ onUnlock, riskLevel, color }: { onUnlock: () => void; riskLevel: string; color: string }) {
   const [loading, setLoading] = useState(false);
-  const locked = ["Complete factor breakdown (what's actually driving the date)", "The exact pattern with behavioral evidence", "3 specific action steps", "Overall urgency verdict", "Shareable card to send your partner"];
+  const locked = ["Your exact expiration date — revealed in full", "Your survival odds percentage", "Complete factor breakdown (what's actually driving it)", "3 specific action steps", "Shareable card to send (or show) your partner"];
   return (
     <div style={{ borderRadius: 16, overflow: "hidden", border: "1px solid var(--border)" }}>
       <div style={{ filter: "blur(4px)", pointerEvents: "none", padding: "1.25rem 1.5rem", background: "#FAFAF8", userSelect: "none" }}>
@@ -964,7 +1009,7 @@ function PaywallGate({ onUnlock, riskLevel, color }: { onUnlock: () => void; ris
           UNLOCK THE FULL BREAKDOWN
         </p>
         <p style={{ fontSize: 13, color: "var(--muted)", textAlign: "center", marginBottom: "1.25rem", lineHeight: 1.65 }}>
-          Your <strong style={{ color }}>{riskLevel.toLowerCase()}</strong> result comes with a complete analysis of every factor and the specific patterns driving your expiration date.
+          The date is calculated. Unlock to see it — along with every factor driving the prediction and your exact survival odds.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 9, marginBottom: "1.25rem" }}>
           {locked.map((item) => (
