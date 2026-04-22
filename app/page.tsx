@@ -91,10 +91,16 @@ function HomeInner() {
   const handleChange = (id: string, value: string | number) =>
     setAnswers((prev) => ({ ...prev, [id]: value }));
 
+  const scrollToTop = () => {
+    // Scroll the app card into view, then nudge to the very top
+    appRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const handleNext = async () => {
     if (stepIndex < steps.length - 1) {
       setStepIndex((i) => i + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      setTimeout(scrollToTop, 30);
     } else {
       await runAnalysis();
     }
@@ -103,7 +109,14 @@ function HomeInner() {
   const handleBack = () => {
     if (stepIndex > 0) {
       setStepIndex((i) => i - 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      setTimeout(scrollToTop, 30);
+    }
+  };
+
+  const handleNavigate = (index: number) => {
+    if (index < stepIndex) {
+      setStepIndex(index);
+      setTimeout(scrollToTop, 30);
     }
   };
 
@@ -556,15 +569,27 @@ function HomeInner() {
                   <span style={{ fontSize: 12, color: "var(--red)", fontWeight: 600 }}>{step.title}</span>
                 </div>
                 <div style={{ display: "flex", gap: 6, marginBottom: "1.75rem" }}>
-                  {steps.map((_, i) => (
-                    <div key={i} style={{
-                      flex: i === stepIndex ? "0 0 28px" : "0 0 8px",
-                      height: 8, borderRadius: 4,
-                      background: i <= stepIndex ? "var(--red)" : "var(--border)",
-                      opacity: i < stepIndex ? 0.45 : 1,
-                      transition: "flex 0.35s cubic-bezier(0.34,1.56,0.64,1), background 0.25s",
-                    }} />
-                  ))}
+                  {steps.map((_, i) => {
+                    const isCompleted = i < stepIndex;
+                    const isActive = i === stepIndex;
+                    return (
+                      <div
+                        key={i}
+                        onClick={() => { if (isCompleted) handleNavigate(i); }}
+                        title={isCompleted ? `Back to step ${i + 1}: ${steps[i].title}` : undefined}
+                        style={{
+                          flex: isActive ? "0 0 28px" : "0 0 8px",
+                          height: 8, borderRadius: 4,
+                          background: i <= stepIndex ? "var(--red)" : "var(--border)",
+                          opacity: isCompleted ? 0.5 : 1,
+                          transition: "flex 0.35s cubic-bezier(0.34,1.56,0.64,1), background 0.25s, opacity 0.15s",
+                          cursor: isCompleted ? "pointer" : "default",
+                        }}
+                        onMouseEnter={(e) => { if (isCompleted) (e.currentTarget as HTMLDivElement).style.opacity = "1"; }}
+                        onMouseLeave={(e) => { if (isCompleted) (e.currentTarget as HTMLDivElement).style.opacity = "0.5"; }}
+                      />
+                    );
+                  })}
                 </div>
 
                 {/* Questions */}
