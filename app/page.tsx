@@ -860,13 +860,12 @@ function ResultScreen({ result, isPaid, onUnlock, onRestart }: {
         )}
       </div>
 
-      {/* SHARE */}
-      <div className="fade-up-d4">
-        {isPaid
-          ? <ShareBtn result={result} rc={rc} full={true} />
-          : <ShareBtn result={result} rc={rc} full={false} />
-        }
-      </div>
+      {/* SHARE — only available after payment */}
+      {isPaid && (
+        <div className="fade-up-d4">
+          <ShareBtn result={result} rc={rc} />
+        </div>
+      )}
 
       <p className="fade-up-d5" style={{ fontSize: 12, color: "#C5BDB3", textAlign: "center", lineHeight: 1.6 }}>{result.disclaimer}</p>
 
@@ -989,7 +988,7 @@ function FactorRow({ factor }: { factor: ExpirationResult["factors"][0] }) {
 
 function PaywallGate({ onUnlock, riskLevel, color }: { onUnlock: () => void; riskLevel: string; color: string }) {
   const [loading, setLoading] = useState(false);
-  const locked = ["Your exact expiration date — revealed in full", "Your survival odds percentage", "Complete factor breakdown (what's actually driving it)", "3 specific action steps", "Shareable card to send (or show) your partner"];
+  const locked = ["Your exact expiration date — revealed in full", "Your survival odds percentage", "Complete factor breakdown (what's actually driving it)", "3 specific action steps", "Shareable result card — send it, post it, confront your partner with it"];
   return (
     <div style={{ borderRadius: 16, overflow: "hidden", border: "1px solid var(--border)" }}>
       <div style={{ filter: "blur(4px)", pointerEvents: "none", padding: "1.25rem 1.5rem", background: "#FAFAF8", userSelect: "none" }}>
@@ -1042,7 +1041,7 @@ function PaywallGate({ onUnlock, riskLevel, color }: { onUnlock: () => void; ris
   );
 }
 
-function ShareBtn({ result, rc, full }: { result: ExpirationResult; rc: typeof riskConfig["Strong"]; full: boolean }) {
+function ShareBtn({ result, rc }: { result: ExpirationResult; rc: typeof riskConfig["Strong"] }) {
   const [status, setStatus] = useState<"idle" | "generating" | "copied" | "shared">("idle");
 
   function drawCard(): HTMLCanvasElement {
@@ -1067,7 +1066,7 @@ function ShareBtn({ result, rc, full }: { result: ExpirationResult; rc: typeof r
     ctx.beginPath(); ctx.roundRect(60, 180, W-120, 340, 16); ctx.stroke();
     // Label
     ctx.fillStyle = rc.color; ctx.font = "600 22px sans-serif"; ctx.textAlign = "center";
-    ctx.fillText(full ? "PREDICTED END DATE" : "RELATIONSHIP STATUS", W/2, 240);
+    ctx.fillText("PREDICTED END DATE", W/2, 240);
     // Date
     ctx.fillStyle = rc.color; ctx.font = `bold 64px sans-serif`;
     ctx.fillText(result.expirationLabel, W/2, 330);
@@ -1110,7 +1109,7 @@ function ShareBtn({ result, rc, full }: { result: ExpirationResult; rc: typeof r
     const file = new File([blob], "my-expiration-date.png", { type: "image/png" });
     if (navigator.canShare?.({ files: [file] })) {
       try {
-        await navigator.share({ files: [file], title: "My Relationship Expiration Date", text: full ? `The algorithm says: ${result.expirationLabel}. ${result.headline}` : `My relationship expiration date: ${result.expirationLabel}. Find yours at expirationdate.app` });
+        await navigator.share({ files: [file], title: "My Relationship Expiration Date", text: `The algorithm says: ${result.expirationLabel}. ${result.headline} Find yours at expirationdate.app` });
         setStatus("shared"); setTimeout(() => setStatus("idle"), 2500); return;
       } catch {}
     }
@@ -1121,7 +1120,7 @@ function ShareBtn({ result, rc, full }: { result: ExpirationResult; rc: typeof r
     setTimeout(() => setStatus("idle"), 2500);
   }
 
-  const label = status === "generating" ? "Generating card…" : status === "copied" ? "Image saved · Link copied!" : status === "shared" ? "Shared!" : full ? "Share my expiration date" : "Share my result";
+  const label = status === "generating" ? "Generating card…" : status === "copied" ? "Image saved · Link copied!" : status === "shared" ? "Shared!" : "Share my expiration date";
   const btnBg = status === "idle" ? "var(--ink)" : status === "generating" ? "#5C544A" : "#3D8B6E";
 
   return (
