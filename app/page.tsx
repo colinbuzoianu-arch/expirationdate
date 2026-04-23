@@ -707,19 +707,72 @@ function HomeInner() {
       </div>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: "1px solid var(--border)", background: "var(--ink)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-          <Wordmark compact={true} />
+      <footer style={{ borderTop: "1px solid #2A2520", background: "var(--ink)", padding: "3rem 1.5rem 2rem" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto" }}>
+
+          {/* Top row: Expiration Date wordmark + CoupleIQ branding */}
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            flexWrap: "wrap", gap: 20, marginBottom: "2rem",
+            paddingBottom: "2rem", borderBottom: "1px solid #2A2520",
+          }}>
+            <Wordmark compact={true} />
+
+            {/* CoupleIQ branding */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: 11, color: "#4A4440", letterSpacing: "0.06em", textTransform: "uppercase" }}>A product by</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <img
+                  src="/coupleiq_logo.png"
+                  alt="CoupleIQ"
+                  style={{ width: 32, height: 32, borderRadius: 8, objectFit: "cover" }}
+                />
+                <div>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: "#C5BAB2", letterSpacing: "-0.01em" }}>
+                    Couple<span style={{ color: "#D94F3D" }}>IQ</span>
+                  </span>
+                  <p style={{ fontSize: 9, color: "#4A4440", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: 1 }}>
+                    Relationship Health
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Middle row: tagline + support */}
+          <div style={{
+            display: "flex", flexWrap: "wrap", gap: 16,
+            justifyContent: "space-between", alignItems: "flex-start",
+            marginBottom: "1.75rem",
+          }}>
+            <div>
+              <p style={{ fontSize: 12, color: "#4A4440", lineHeight: 1.8 }}>
+                Built on relationship science · Powered by Claude AI<br />
+                No answers stored · Private by design
+              </p>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <p style={{ fontSize: 11, color: "#4A4440", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.08em" }}>Support</p>
+              <a
+                href="mailto:support.coupleiq@gmail.com"
+                style={{ fontSize: 13, color: "#D94F3D", textDecoration: "none", fontWeight: 500 }}
+                onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+                onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+              >
+                support.coupleiq@gmail.com
+              </a>
+            </div>
+          </div>
+
+          {/* Bottom row: copyright + legal */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "space-between", alignItems: "center" }}>
+            <p style={{ fontSize: 11, color: "#332E2A" }}>
+              © {new Date().getFullYear()} CoupleIQ · For informational purposes only · Not a substitute for couples therapy
+            </p>
+            <a href="/legal" style={{ fontSize: 11, color: "#4A4440", textDecoration: "underline" }}>Privacy & Terms</a>
+          </div>
+
         </div>
-        <p style={{ fontSize: 12, color: "#4A4440", lineHeight: 1.7 }}>
-          Built on relationship science · Powered by Claude AI · No answers stored
-        </p>
-        <p style={{ fontSize: 11, color: "#332E2A", marginTop: 8 }}>
-          © {new Date().getFullYear()} expirationdate.app · For informational purposes only · Not a substitute for couples therapy
-        </p>
-        <p style={{ fontSize: 12, color: "#4A4440", marginTop: 8 }}>
-          <a href="/legal" style={{ color: "#6A6460", textDecoration: "underline" }}>Privacy & Terms</a>
-        </p>
       </footer>
     </div>
   );
