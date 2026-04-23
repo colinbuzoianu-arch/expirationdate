@@ -29,33 +29,24 @@ body {
   min-height: 100vh;
 }
 
-/* Animations */
+/* ── Animations ───────────────────────────────────────────── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 @keyframes pulse-red {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
-}
-@keyframes tick {
-  0% { transform: scaleX(1); }
-  50% { transform: scaleX(0.97); }
-  100% { transform: scaleX(1); }
+  50%       { opacity: 0.6; }
 }
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-@keyframes countUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
-.fade-up { animation: fadeUp 0.55s ease forwards; }
+.fade-up    { animation: fadeUp 0.55s ease forwards; }
 .fade-up-d1 { animation: fadeUp 0.55s 0.1s ease both; }
 .fade-up-d2 { animation: fadeUp 0.55s 0.2s ease both; }
 .fade-up-d3 { animation: fadeUp 0.55s 0.3s ease both; }
@@ -65,22 +56,7 @@ body {
 .fade-up-d7 { animation: fadeUp 0.55s 0.7s ease both; }
 .fade-up-d8 { animation: fadeUp 0.55s 0.8s ease both; }
 
-/* Quiz option buttons */
-.opt-btn {
-  transition: all 0.15s ease;
-}
-.opt-btn:hover:not(.selected) {
-  border-color: #D94F3D !important;
-  background: #FDF5F4 !important;
-}
-.opt-btn.selected {
-  border-color: #D94F3D !important;
-  background: #FAEAE8 !important;
-  color: #B83A2A !important;
-  font-weight: 600 !important;
-}
-
-/* Range input */
+/* ── Range input ──────────────────────────────────────────── */
 input[type="range"] {
   -webkit-appearance: none;
   width: 100%;
@@ -100,7 +76,7 @@ input[type="range"]::-webkit-slider-thumb {
   cursor: pointer;
   transition: transform 0.1s ease;
 }
-input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.1); }
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
 input[type="range"]::-moz-range-thumb {
   width: 22px; height: 22px;
   border-radius: 50%;
@@ -109,7 +85,149 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
 }
 
-/* Scrollbar */
+/* ── Scrollbar ────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #D5CFC6; border-radius: 3px; }
+
+/* ── Layout helpers ───────────────────────────────────────── */
+
+/* Footer rows */
+.footer-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #2A2520;
+}
+.footer-middle-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.75rem;
+}
+.footer-bottom-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Hero CTA buttons */
+.hero-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Pricing grid */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+/* ── Mobile (≤ 600px) ─────────────────────────────────────── */
+@media (max-width: 600px) {
+
+  /* Footer: stack and centre everything */
+  .footer-top-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .footer-middle-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .footer-bottom-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+
+  /* Pricing: single column */
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Hero buttons: stack full-width */
+  .hero-btns {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hero-btns button {
+    width: 100% !important;
+    justify-content: center;
+  }
+
+  /* Tighter section padding */
+  .section-pad {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+
+  /* Stat bar: single column */
+  .stats-bar-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  /* How it works cards */
+  .how-it-works-card {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  /* Result two-column grids → single */
+  .two-col-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Quiz card padding tighter */
+  .quiz-card {
+    padding: 1.25rem 1rem !important;
+  }
+
+  /* Nav: tighter padding */
+  .nav-inner {
+    padding: 0 1rem !important;
+  }
+
+  /* Testimonials: tighter */
+  .testimonials-section {
+    padding: 2.5rem 1rem !important;
+  }
+
+  /* Viral section */
+  .viral-section {
+    padding: 3rem 1rem !important;
+  }
+
+  /* Final CTA */
+  .final-cta {
+    padding: 4rem 1rem !important;
+  }
+}
+
+/* ── Tablet (601–900px) ───────────────────────────────────── */
+@media (min-width: 601px) and (max-width: 900px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .footer-top-row {
+    justify-content: center;
+    gap: 28px;
+  }
+}

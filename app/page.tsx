@@ -187,7 +187,7 @@ function HomeInner() {
     },
     {
       q: "What does the paid report include?",
-      a: "The free result shows your expiration date and risk level. The paid report ($4.99) unlocks the full factor breakdown, the specific patterns driving the prediction, three concrete action steps, and a shareable result card.",
+      a: "The quiz is free to complete. Your results — including the expiration date, survival odds, full factor breakdown, the pattern driving the prediction, three action steps, and a shareable card — are unlocked for a one-time $4.99 payment after you finish.",
     },
     {
       q: "Do you store my answers?",
@@ -266,7 +266,7 @@ function HomeInner() {
               "Our app says we have 14 months left." Find out yours.
             </p>
 
-            <div className="fade-up-d3" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <div className="fade-up-d3 hero-btns" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
               <button
                 onClick={startQuiz}
                 style={{
@@ -296,13 +296,13 @@ function HomeInner() {
               </button>
             </div>
             <p className="fade-up-d4" style={{ marginTop: "1rem", fontSize: 12, color: "#C5BDB3" }}>
-              Free to start · Private · No account needed · Takes 3 minutes
+              Free to answer · $4.99 to unlock your results · Takes 3 minutes
             </p>
           </section>
 
           {/* STATS BAR */}
           <section style={{ background: "var(--ink)", padding: "2.5rem 1.5rem" }}>
-            <div style={{
+            <div className="stats-bar-grid" style={{
               maxWidth: 780, margin: "0 auto",
               display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
               gap: "2rem", textAlign: "center",
@@ -342,7 +342,7 @@ function HomeInner() {
                 },
                 {
                   n: "03", title: "You get a date.",
-                  body: "Not a vague 'moderate risk.' A specific month and year — or confirmation that we can't find one. Free result shows the date. Paid unlocks every factor driving it."
+                  body: "Not a vague 'moderate risk.' A specific month and year — or confirmation that we can't find one. Answer free, then unlock the full prediction for $4.99."
                 },
               ].map((s) => (
                 <div key={s.n} style={{
@@ -413,22 +413,39 @@ function HomeInner() {
           </section>
 
           {/* WHAT YOU GET */}
-          <section style={{ maxWidth: 780, margin: "0 auto", padding: "5rem 1.5rem" }}>
+          <section className="section-pad" style={{ maxWidth: 780, margin: "0 auto", padding: "5rem 1.5rem" }}>
             <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-              <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 48, letterSpacing: "0.04em", color: "var(--ink)" }}>
-                FREE VS FULL REPORT
+              <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(36px,7vw,48px)", letterSpacing: "0.04em", color: "var(--ink)" }}>
+                HOW IT'S PRICED
               </h2>
-              <p style={{ fontSize: 15, color: "var(--muted)", marginTop: "0.5rem" }}>Start free. Unlock everything for $4.99.</p>
+              <p style={{ fontSize: 15, color: "var(--muted)", marginTop: "0.5rem" }}>Answer the quiz for free. Pay once to unlock everything.</p>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+            <div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+              {/* Free tier — quiz only */}
               <div style={{ borderRadius: 16, border: "1px solid var(--border)", padding: "1.75rem", background: "#F5F2EE" }}>
-                <p style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 20 }}>Free</p>
-                {["Your expiration date (or 'No expiration')", "Risk level: Strong / Fragile / Critical / Terminal", "Your relationship pattern name", "The biggest threat and biggest strength"].map((item) => (
+                <p style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Free</p>
+                <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 28, letterSpacing: "0.04em", color: "var(--ink)", marginBottom: 4, lineHeight: 1 }}>The Quiz</p>
+                <p style={{ fontSize: 13, color: "#8A8278", marginBottom: 20, lineHeight: 1.6 }}>Answer 10 questions. The AI analyses your relationship in real time. No payment needed to start.</p>
+                {[
+                  "10-question relationship assessment",
+                  "Real-time AI analysis of your patterns",
+                  "Risk level: Strong / Fragile / Critical / Terminal",
+                ].map((item) => (
                   <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 12, fontSize: 13, color: "#4A4440" }}>
                     <span style={{ color: "var(--green)", fontWeight: 700, flexShrink: 0, marginTop: 1 }}>✓</span> {item}
                   </div>
                 ))}
+                {[
+                  "Expiration date — blurred",
+                  "Survival odds — hidden",
+                  "Full breakdown — locked",
+                ].map((item) => (
+                  <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10, fontSize: 13, color: "#C5BDB3" }}>
+                    <span style={{ flexShrink: 0, marginTop: 1 }}>🔒</span> {item}
+                  </div>
+                ))}
               </div>
+              {/* Paid tier */}
               <div style={{ borderRadius: 16, border: "2px solid var(--red)", padding: "1.75rem", background: "var(--white)", position: "relative", boxShadow: "var(--card-shadow)" }}>
                 <div style={{
                   position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)",
@@ -436,13 +453,17 @@ function HomeInner() {
                   padding: "4px 16px", borderRadius: 20, letterSpacing: "0.08em",
                   fontFamily: "'Bebas Neue', sans-serif", fontSize: 13, whiteSpace: "nowrap",
                 }}>FULL REPORT — $4.99</div>
-                <p style={{ fontSize: 11, fontWeight: 700, color: "var(--red)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 20 }}>Everything in Free, plus</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: "var(--red)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Unlock Everything</p>
+                <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 28, letterSpacing: "0.04em", color: "var(--ink)", marginBottom: 4, lineHeight: 1 }}>Full Results</p>
+                <p style={{ fontSize: 13, color: "#8A8278", marginBottom: 20, lineHeight: 1.6 }}>One-time payment. No subscription. Results delivered instantly after checkout.</p>
                 {[
+                  "Your exact expiration date — month and year revealed",
+                  "Exact survival odds percentage",
                   "Complete factor breakdown with severity weights",
-                  "The exact behavioral pattern driving the prediction",
-                  "3 specific, named action steps",
-                  "Overall urgency verdict",
-                  "Shareable result card to send (or confront) your partner",
+                  "The named behavioral pattern driving the prediction",
+                  "3 specific, actionable next steps",
+                  "Urgency verdict — how fast you need to act",
+                  "Shareable result card — post it, or send it to your partner",
                 ].map((item) => (
                   <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 12, fontSize: 13, color: "var(--ink)" }}>
                     <span style={{ color: "var(--red)", fontWeight: 700, flexShrink: 0, marginTop: 1 }}>✓</span> {item}
@@ -537,7 +558,7 @@ function HomeInner() {
               >
                 FIND OUT MY DATE
               </button>
-              <p style={{ marginTop: "1rem", fontSize: 12, color: "#4A4440" }}>Free to start · Private · No account</p>
+              <p style={{ marginTop: "1rem", fontSize: 12, color: "#4A4440" }}>Free to answer · $4.99 to unlock · Private</p>
             </div>
           </section>
         </>
@@ -715,7 +736,7 @@ function HomeInner() {
             display: "flex", alignItems: "center", justifyContent: "space-between",
             flexWrap: "wrap", gap: 20, marginBottom: "2rem",
             paddingBottom: "2rem", borderBottom: "1px solid #2A2520",
-          }}>
+          }} className="footer-top-row">
             {/* Left: Expiration Date — explicit light colours for dark bg */}
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <Logo size={32} />
@@ -758,7 +779,7 @@ function HomeInner() {
             display: "flex", flexWrap: "wrap", gap: 16,
             justifyContent: "space-between", alignItems: "flex-start",
             marginBottom: "1.75rem",
-          }}>
+          }} className="footer-middle-row">
             <div>
               <p style={{ fontSize: 12, color: "#4A4440", lineHeight: 1.8 }}>
                 Built on relationship science · Powered by Claude AI<br />
@@ -779,7 +800,7 @@ function HomeInner() {
           </div>
 
           {/* Bottom row: copyright + legal */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "space-between", alignItems: "center" }} className="footer-bottom-row">
             <p style={{ fontSize: 11, color: "#332E2A" }}>
               © {new Date().getFullYear()} CoupleIQ · For informational purposes only · Not a substitute for couples therapy
             </p>
@@ -882,6 +903,7 @@ function LoadingScreen() {
 // ── Option Button with spring tap animation ──────────────────────────
 function OptionButton({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
   const [pressing, setPressing] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const [justSelected, setJustSelected] = useState(false);
 
   const handleClick = () => {
@@ -895,18 +917,29 @@ function OptionButton({ label, selected, onClick }: { label: string; selected: b
     }, 120);
   };
 
-  const scale = pressing ? 0.96 : justSelected ? 1.025 : 1;
-  const bg = selected ? "var(--red-light)" : pressing ? "#F5EDEC" : "#FAFAF8";
+  const scale = pressing ? 0.96 : justSelected ? 1.025 : hovered && !selected ? 1.015 : 1;
+  const bg = selected
+    ? "var(--red-light)"
+    : pressing
+    ? "#F5EDEC"
+    : hovered
+    ? "#FDF5F4"
+    : "#FAFAF8";
   const border = selected
     ? "1.5px solid var(--red)"
-    : pressing
+    : pressing || hovered
     ? "1.5px solid #E8A09A"
     : "1px solid var(--border)";
-  const color = selected ? "var(--red-dark)" : pressing ? "#5C544A" : "#2A2520";
+  const color = selected ? "var(--red-dark)" : pressing ? "#5C544A" : hovered ? "#3A2520" : "#2A2520";
+  const shadow = hovered && !selected && !pressing
+    ? "0 4px 14px rgba(217,79,61,0.10)"
+    : "none";
 
   return (
     <button
       onClick={handleClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => { setHovered(false); }}
       style={{
         background: bg,
         border,
@@ -920,9 +953,10 @@ function OptionButton({ label, selected, onClick }: { label: string; selected: b
         cursor: "pointer",
         width: "100%",
         transform: `scale(${scale})`,
+        boxShadow: shadow,
         transition: pressing
-          ? "transform 0.1s ease, background 0.1s, border 0.1s, color 0.1s"
-          : "transform 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.18s, border 0.18s, color 0.18s",
+          ? "transform 0.1s ease, background 0.1s, border 0.1s, color 0.1s, box-shadow 0.1s"
+          : "transform 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.18s, border 0.18s, color 0.18s, box-shadow 0.2s",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -938,6 +972,12 @@ function OptionButton({ label, selected, onClick }: { label: string; selected: b
           fontSize: 10, fontWeight: 700, flexShrink: 0,
           animation: "fadeIn 0.2s ease",
         }}>✓</span>
+      )}
+      {hovered && !selected && (
+        <span style={{
+          fontSize: 12, color: "#D94F3D", opacity: 0.6, flexShrink: 0,
+          transition: "opacity 0.15s",
+        }}>→</span>
       )}
     </button>
   );
