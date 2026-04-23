@@ -710,30 +710,44 @@ function HomeInner() {
       <footer style={{ borderTop: "1px solid #2A2520", background: "var(--ink)", padding: "3rem 1.5rem 2rem" }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
 
-          {/* Top row: Expiration Date wordmark + CoupleIQ branding */}
+          {/* Top row: Expiration Date wordmark + divider + CoupleIQ */}
           <div style={{
             display: "flex", alignItems: "center", justifyContent: "space-between",
             flexWrap: "wrap", gap: 20, marginBottom: "2rem",
             paddingBottom: "2rem", borderBottom: "1px solid #2A2520",
           }}>
-            <Wordmark compact={true} />
-
-            {/* CoupleIQ branding */}
+            {/* Left: Expiration Date — explicit light colours for dark bg */}
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 11, color: "#4A4440", letterSpacing: "0.06em", textTransform: "uppercase" }}>A product by</span>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <img
-                  src="/coupleiq_logo.png"
-                  alt="CoupleIQ"
-                  style={{ width: 32, height: 32, borderRadius: 8, objectFit: "cover" }}
-                />
-                <div>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: "#C5BAB2", letterSpacing: "-0.01em" }}>
-                    Couple<span style={{ color: "#D94F3D" }}>IQ</span>
-                  </span>
-                  <p style={{ fontSize: 9, color: "#4A4440", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: 1 }}>
-                    Relationship Health
-                  </p>
+              <Logo size={32} />
+              <div>
+                <div style={{
+                  fontFamily: "'Bebas Neue', sans-serif",
+                  fontSize: 20, letterSpacing: "0.04em",
+                  color: "#E8E2D9", lineHeight: 1,
+                }}>
+                  EXPIRATION DATE
+                </div>
+                <div style={{ fontSize: 9, color: "#5C554E", letterSpacing: "0.12em", textTransform: "uppercase", marginTop: 3 }}>
+                  Relationship Forecast
+                </div>
+              </div>
+            </div>
+
+            {/* Right: CoupleIQ */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <span style={{ fontSize: 10, color: "#3A3530", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 500 }}>A product by</span>
+              <div style={{ width: 1, height: 28, background: "#2A2520" }} />
+              <img
+                src="/coupleiq_logo.png"
+                alt="CoupleIQ logo"
+                style={{ width: 34, height: 34, borderRadius: 8, objectFit: "cover", flexShrink: 0 }}
+              />
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#D4CCC6", letterSpacing: "-0.01em", lineHeight: 1 }}>
+                  Couple<span style={{ color: "#D94F3D" }}>IQ</span>
+                </div>
+                <div style={{ fontSize: 9, color: "#5C554E", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: 3 }}>
+                  Relationship Health
                 </div>
               </div>
             </div>
