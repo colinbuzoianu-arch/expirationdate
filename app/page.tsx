@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, Suspense } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { steps } from "@/lib/questions";
 import { Answers, ExpirationResult } from "@/lib/types";
@@ -611,16 +611,12 @@ function HomeInner() {
                           {q.options!.map((opt) => {
                             const sel = val === opt;
                             return (
-                              <button key={opt} className={`opt-btn${sel ? " selected" : ""}`}
+                              <OptionButton
+                                key={opt}
+                                label={opt}
+                                selected={sel}
                                 onClick={() => handleChange(q.id, opt)}
-                                style={{
-                                  background: sel ? "var(--red-light)" : "#FAFAF8",
-                                  border: sel ? "1.5px solid var(--red)" : "1px solid var(--border)",
-                                  borderRadius: 12, padding: "12px 16px", textAlign: "left",
-                                  fontSize: 14, color: sel ? "var(--red-dark)" : "#2A2520",
-                                  fontWeight: sel ? 600 : 400, lineHeight: 1.45, cursor: "pointer",
-                                }}
-                              >{opt}</button>
+                              />
                             );
                           })}
                         </div>
@@ -688,18 +684,7 @@ function HomeInner() {
             )}
 
             {/* LOADING */}
-            {screen === "loading" && (
-              <div style={{ textAlign: "center", padding: "3rem 0" }}>
-                <div style={{ width: 48, height: 48, border: "3px solid var(--red-light)", borderTopColor: "var(--red)", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 2rem" }} />
-                <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 28, letterSpacing: "0.06em", color: "var(--ink)", marginBottom: 8 }}>
-                  RUNNING THE ALGORITHM
-                </p>
-                <p style={{ fontSize: 14, color: "var(--muted)", lineHeight: 1.6 }}>
-                  Analyzing conflict patterns, intimacy trajectory,<br />
-                  goal alignment, and 12 other predictors…
-                </p>
-              </div>
-            )}
+            {screen === "loading" && <LoadingScreen />}
 
             {/* RESULT */}
             {screen === "result" && result && (
@@ -737,6 +722,157 @@ function HomeInner() {
         </p>
       </footer>
     </div>
+  );
+}
+
+// ── Loading Screen ──────────────────────────────────────────────────
+const LOADING_MESSAGES = [
+  { text: "Reading your conflict patterns…",    sub: "This usually takes 15–20 seconds" },
+  { text: "Mapping your intimacy trajectory…",  sub: "Almost there — hang tight" },
+  { text: "Weighing deal-breaker risk…",        sub: "The algorithm is thorough" },
+  { text: "Checking repair dynamics…",          sub: "Nearly done…" },
+  { text: "Calculating your expiration date…",  sub: "Just a few more seconds" },
+  { text: "Finalising the verdict…",            sub: "Almost there ✦" },
+];
+
+function LoadingScreen() {
+  const [msgIdx, setMsgIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const cycle = () => {
+      setVisible(false);
+      setTimeout(() => {
+        setMsgIdx((i) => (i + 1) % LOADING_MESSAGES.length);
+        setVisible(true);
+      }, 350);
+    };
+    const id = setInterval(cycle, 3200);
+    return () => clearInterval(id);
+  }, []);
+
+  const msg = LOADING_MESSAGES[msgIdx];
+
+  return (
+    <div style={{ textAlign: "center", padding: "3.5rem 1rem" }}>
+      {/* Hourglass spinner */}
+      <div style={{ position: "relative", width: 56, height: 56, margin: "0 auto 2rem" }}>
+        <div style={{
+          width: 56, height: 56,
+          border: "3px solid var(--red-light)",
+          borderTopColor: "var(--red)",
+          borderRadius: "50%",
+          animation: "spin 0.9s linear infinite",
+        }} />
+        <svg
+          style={{ position: "absolute", inset: 0, margin: "auto", width: 24, height: 24 }}
+          viewBox="0 0 40 40" fill="none"
+        >
+          <path d="M11 9h18v5.5l-7 5.5 7 5.5V31H11v-5.5l7-5.5-7-5.5V9z" stroke="#D94F3D" strokeWidth="2" fill="none" opacity=".5"/>
+          <path d="M12.5 10.5h15L21 15.5l-2 1.5-2-1.5-4.5-5z" fill="#D94F3D" opacity=".7"/>
+          <circle cx="20" cy="21" r="1.5" fill="#D94F3D"/>
+        </svg>
+      </div>
+
+      {/* Rotating headline */}
+      <p style={{
+        fontFamily: "'Bebas Neue', sans-serif",
+        fontSize: 24, letterSpacing: "0.06em", color: "var(--ink)",
+        marginBottom: 8,
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(6px)",
+        transition: "opacity 0.3s ease, transform 0.3s ease",
+      }}>
+        {msg.text}
+      </p>
+
+      {/* Sub-message */}
+      <p style={{
+        fontSize: 13, color: "var(--muted)", lineHeight: 1.6,
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.35s ease 0.05s",
+        marginBottom: "2rem",
+      }}>
+        {msg.sub}
+      </p>
+
+      {/* Progress dots */}
+      <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>
+        {LOADING_MESSAGES.map((_, i) => (
+          <div key={i} style={{
+            width: i === msgIdx ? 20 : 6,
+            height: 6, borderRadius: 3,
+            background: i <= msgIdx ? "var(--red)" : "var(--border)",
+            opacity: i < msgIdx ? 0.35 : 1,
+            transition: "width 0.4s cubic-bezier(0.34,1.56,0.64,1), background 0.25s",
+          }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Option Button with spring tap animation ──────────────────────────
+function OptionButton({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
+  const [pressing, setPressing] = useState(false);
+  const [justSelected, setJustSelected] = useState(false);
+
+  const handleClick = () => {
+    if (selected) return;
+    setPressing(true);
+    setTimeout(() => {
+      setPressing(false);
+      setJustSelected(true);
+      onClick();
+      setTimeout(() => setJustSelected(false), 500);
+    }, 120);
+  };
+
+  const scale = pressing ? 0.96 : justSelected ? 1.025 : 1;
+  const bg = selected ? "var(--red-light)" : pressing ? "#F5EDEC" : "#FAFAF8";
+  const border = selected
+    ? "1.5px solid var(--red)"
+    : pressing
+    ? "1.5px solid #E8A09A"
+    : "1px solid var(--border)";
+  const color = selected ? "var(--red-dark)" : pressing ? "#5C544A" : "#2A2520";
+
+  return (
+    <button
+      onClick={handleClick}
+      style={{
+        background: bg,
+        border,
+        borderRadius: 12,
+        padding: "12px 16px",
+        textAlign: "left",
+        fontSize: 14,
+        color,
+        fontWeight: selected ? 600 : 400,
+        lineHeight: 1.45,
+        cursor: "pointer",
+        width: "100%",
+        transform: `scale(${scale})`,
+        transition: pressing
+          ? "transform 0.1s ease, background 0.1s, border 0.1s, color 0.1s"
+          : "transform 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.18s, border 0.18s, color 0.18s",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 10,
+      }}
+    >
+      <span>{label}</span>
+      {selected && (
+        <span style={{
+          width: 18, height: 18, borderRadius: "50%",
+          background: "var(--red)", color: "#fff",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 10, fontWeight: 700, flexShrink: 0,
+          animation: "fadeIn 0.2s ease",
+        }}>✓</span>
+      )}
+    </button>
   );
 }
 
@@ -860,20 +996,6 @@ function ResultScreen({ result, isPaid, onUnlock, onRestart }: {
         <p style={{ fontSize: 10, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Your relationship pattern</p>
         <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: "0.04em", color: "var(--red)", marginBottom: 8 }}>{result.pattern}</p>
         <p style={{ fontSize: 14, color: "#5C544A", lineHeight: 1.75 }}>{result.patternDetail}</p>
-      </div>
-
-      {/* THREAT + STRENGTH */}
-      <div className="fade-up-d2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <div style={{ background: "var(--red-light)", border: "1px solid var(--red-mid)", borderRadius: 14, padding: "1rem" }}>
-          <p style={{ fontSize: 10, fontWeight: 700, color: "var(--red-dark)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Biggest threat</p>
-          <p style={{ fontSize: 14, fontWeight: 700, color: "#6B1A12", marginBottom: 6 }}>{result.biggestThreat}</p>
-          <p style={{ fontSize: 12, color: "var(--red-dark)", lineHeight: 1.65 }}>{result.biggestThreatDetail}</p>
-        </div>
-        <div style={{ background: "var(--green-light)", border: "1px solid #A8D4C2", borderRadius: 14, padding: "1rem" }}>
-          <p style={{ fontSize: 10, fontWeight: 700, color: "#2A6B53", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Biggest strength</p>
-          <p style={{ fontSize: 14, fontWeight: 700, color: "#1A4435", marginBottom: 6 }}>{result.biggestStrength}</p>
-          <p style={{ fontSize: 12, color: "#2A6B53", lineHeight: 1.65 }}>{result.biggestStrengthDetail}</p>
-        </div>
       </div>
 
       {/* PAYWALL */}
