@@ -5,6 +5,20 @@ import { Answers, ExpirationResult } from "@/lib/types";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
+function extractJSON(raw: string): string {
+  // 1. Try to extract content between first { and last }
+  const firstBrace = raw.indexOf("{");
+  const lastBrace = raw.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    return raw.slice(firstBrace, lastBrace + 1);
+  }
+  // 2. Fallback: strip all markdown fences aggressively
+  return raw
+    .replace(/```json\s*/gi, "")
+    .replace(/```\s*/g, "")
+    .trim();
+}
+
 export async function POST(req: NextRequest) {
   try {
     const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -60,7 +74,7 @@ export async function POST(req: NextRequest) {
       .map((block: { type: string; text?: string }) => (block.type === "text" ? block.text ?? "" : ""))
       .join("");
 
-    const clean = rawText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+    const clean = extractJSON(rawText);
 
     let result: ExpirationResult;
     try {

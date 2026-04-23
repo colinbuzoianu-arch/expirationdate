@@ -83,6 +83,32 @@ function HomeInner() {
 
   const scrollToApp = () => appRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
+  // On mount — check if we're returning from Stripe with ?unlocked=TOKEN
+  useEffect(() => {
+    const unlocked = searchParams.get("unlocked");
+    if (!unlocked) return;
+
+    // Try to restore the result from localStorage
+    try {
+      const stored = localStorage.getItem(`exp_result_${unlocked}`);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setResult(parsed);
+        setResultToken(unlocked);
+        setIsPaid(true);
+        setScreen("result");
+        // Clean up the URL without a page reload
+        window.history.replaceState({}, "", "/");
+        return;
+      }
+    } catch {}
+
+    // Result not in localStorage (different browser/tab) — verify payment and show upgrade message
+    setErrorMsg("Payment confirmed but your session expired. Please retake the quiz — your payment is saved and the full report will unlock automatically.");
+    setScreen("error");
+    window.history.replaceState({}, "", "/");
+  }, []);
+
   const startQuiz = () => {
     setScreen("quiz");
     setTimeout(() => appRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
